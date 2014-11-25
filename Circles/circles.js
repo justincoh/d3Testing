@@ -74,7 +74,8 @@
           var tooltip = d3.select('body').append('div')
               .style('position', 'absolute')
               .style('padding', '0 10px')
-              .style('background', 'white')
+              .style('background', 'black')
+              .style('color','white')
               .style('opacity', 0) // setting to 0 because we dont want it to show when the graphic first loads
 
           d3.selectAll('circle').on('mouseover', function(d) {
@@ -82,7 +83,7 @@
               .style('opacity', 0.5)
             tooltip.transition()
               .style('opacity', .9)
-            tooltip.html('R= '+d[2])
+            tooltip.html('R= '+d[2].toString().substring(0,4)+'%')
               // console.log(d)
               .style('left', (d3.event.pageX -15) + 'px')
               .style('top', (d3.event.pageY - 30) + 'px')
