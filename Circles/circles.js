@@ -28,7 +28,7 @@
         circleEnter.attr('cx',function(data,index){return data[0]+'%'})
                   .attr('cy',function(data,index){return data[1]+'%'})
                   .attr('r',function(data){return data[2]+'%'})    
-                  .style('fill',function(d,i){ return colors(100-d[1]) }) //This is working, color based off of data which --> cx and cy
+                  .style('fill',function(d,i){ return colors(d[0]) }) //This is working, color based off of data which --> cx and cy
         };
 
         $('h2').click(function(){   //Generates dots on header click
@@ -67,7 +67,7 @@
               circleEnter.attr('cx',toPercent(data[0][0]))
               .attr('cy',toPercent(data[0][1]))
               .attr('r', toPercent(data[0][2]))
-              .style('fill',function(d,i){ return colors(100-d[1]) });
+              .style('fill',function(d,i){ return colors(d[0]) });
           
           }) //End svg.clickhandler
 
