@@ -1,17 +1,32 @@
 <!DOCTYPE html>
-<meta charset="utf-8">
+<head>
+	<meta charset="utf-8">
+</head>
 <style>
+.label-text {
+    alignment-baseline: middle;
+    font-size: 12px;
+    font-family: arial,helvetica,"sans-serif";
+    fill: #393939;
+}
+.label-line {
+    stroke-width: 1;
+    stroke: #393939;
+}
+.label-circle {
+    fill: #393939;
+}
+
 </style>
 <body> 
 	<div class='container' id='chart'>
+		<g id='labels'></g>
 	
 	</div>
-
+</body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="http://d3js.org/topojson.v1.min.js"></script>
 <script src='pieCharts.js'>
-
-
 </script>
