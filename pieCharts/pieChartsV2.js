@@ -24,6 +24,15 @@ var svg = d3.select("body").append("svg")
 
 // d3.tsv("data.tsv", type, function(error, data) {
 
+// var data=[
+// {apples:1800, oranges:700},
+// {apples:2000, oranges:500},
+// {apples:1200, oranges:60},
+// {apples:200, oranges:700},
+// {apples:900, oranges:500},
+// {apples:400, oranges:700}
+// ];
+
 var data=[
 {apples:1800, oranges:700},
 {apples:2000, oranges:500},
@@ -32,7 +41,6 @@ var data=[
 {apples:900, oranges:500},
 {apples:400, oranges:700}
 ];
-
 
   var path = svg.datum(data).selectAll("path")
       .data(pie)
@@ -91,4 +99,18 @@ paths.on('click', function() {
       thisPath.attr('transitioned', true)
     }
 })
+
+
+/*
+function pieSliceToggle(element){
+  var thisPath = d3.select(element);
+    if(thisPath.attr('transitioned')==='true'){
+      thisPath.transition().attr('d', arc)
+      thisPath.attr('transitioned', false)
+    } else {
+      thisPath.transition().attr('d', transitionArc)
+      thisPath.attr('transitioned', true)
+    }
+};
+*/
 
