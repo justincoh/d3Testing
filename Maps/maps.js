@@ -1,20 +1,10 @@
-var width = 1000,
+var width = 750,
     height = 1000;
 
-// var projection = d3.geo.albers()
-//     .rotate([96, 0])
-//     .center([-.6, 38.7])
-//     .parallels([29.5, 45.5])
-//     .scale(500)
-//     .translate([width / 2, height / 2]);
 
-// var projection = d3.geo.conicConformal()
-//     .rotate([98, 0])
-//     .center([0, 38])
-//     .parallels([29.5, 45.5])
-//     .scale(500)
-//     .translate([width / 2, height / 2])
-//     .precision(.1);
+var color = d3.scale.linear()
+  .domain([0,7])
+  .range(['blue','red'])
 
 var projection = d3.geo.albersUsa()
     .scale(1000)
@@ -30,8 +20,10 @@ var svg = d3.select("body").append("svg")
     .attr("height", height);
 
 
+//////////////////////////////Start Map
 d3.json("us.json", function(error, us) {
   if (error) return console.error(error);
+
 
   svg.append("path")
       .datum(topojson.feature(us, us.objects.subunits))
@@ -42,7 +34,17 @@ d3.json("us.json", function(error, us) {
     .enter().append("path")
       .attr("class", function(d) { return "subunit " + d.id; }) 
       //added id in above line to use as selector: ex US-NY
-      .attr("d", path);
+      .attr("d", path)
+      
+      // .style('fill','#bbb')
+
+/////////Gives state boundary lines
+  svg.insert('path','.graticule')
+    .datum(topojson.feature(us, us.objects.subunits,function(a, b) {return a !== b; }))
+    .attr('class','state-boundary')
+    .attr("d", path);
+
+
 
 
 
@@ -56,6 +58,10 @@ d3.json("us.json", function(error, us) {
               .style('opacity', 0) // setting to 0 because we dont want it to show when the graphic first loads
 
       d3.selectAll('path').on('mouseover', function(d) {
+        if(d3.select(this).attr('class')==='state-boundary'){
+            return;  //Handles mouseover state boundary lines
+          }
+
         var stateAbbrev = d.id.split('-')[1];
         // for(key in d){
           // console.log(d)
@@ -76,7 +82,46 @@ d3.json("us.json", function(error, us) {
             tooltip.transition().duration(500)
               .style('opacity', 0)
       })
+      //////////////////////////////END MAP
+
+      var stateHeat={};
+      /////////////////////////
+      /////Bringing in other json
+      d3.json("data.json",function(error,datum){
+          //Datum.nodes is an array of people with keys
+          //name, occupation, location, gender, marital_status
+          var people = datum.nodes
+          var counter=0
+          people.forEach(function(person){
+            counter++
+            var state =person.location;
+            var thisState = d3.select('path[class*='+state+']')
+            // console.log(counter,person.name,person.location, thisState.attr('class'))
+            if(!stateHeat[state] && stateHeat[state]!==0){
+              stateHeat[state] = 0;
+            }
+            else {
+              stateHeat[state]+=1}
+
+          })
+          console.log(stateHeat)
+
+
+          svg.selectAll(".subunit")
+            .style('fill',function(d){
+              var abbrev = d.id.split('-').pop();
+              console.log('StateHeat ',stateHeat)
+              return color(stateHeat[abbrev])
+            })   
+     
+
+      })  
+
+       
 
 });            
+
+
+
 
 
