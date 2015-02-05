@@ -3,28 +3,28 @@ var width = 750,
 
 
 var color = d3.scale.linear()
-  .domain([0,7])
-  .range(['blue','red'])
+  .domain([1,13])
+  .range(['#8cc0dc','#F20F34'])
 
 var projection = d3.geo.albersUsa()
     .scale(1000)
-    .translate([width / 2, height / 2]);
+    .translate([width / 2, height/3]);
 
 
 var path = d3.geo.path()
     .projection(projection);
 
 
-var svg = d3.select("body").append("svg")
+var svg = d3.select("#mapContainer").append("svg")
     .attr("width", width)
-    .attr("height", height);
+    .attr("height", height)
 
 
 //////////////////////////////Start Map
 d3.json("us.json", function(error, us) {
   if (error) return console.error(error);
 
-
+  // console.log('US ',us)
   svg.append("path")
       .datum(topojson.feature(us, us.objects.subunits))
       .attr("d", path);
@@ -38,7 +38,7 @@ d3.json("us.json", function(error, us) {
       
       // .style('fill','#bbb')
 
-/////////Gives state boundary lines
+///////Gives state boundary lines
   svg.insert('path','.graticule')
     .datum(topojson.feature(us, us.objects.subunits,function(a, b) {return a !== b; }))
     .attr('class','state-boundary')
@@ -63,16 +63,11 @@ d3.json("us.json", function(error, us) {
           }
 
         var stateAbbrev = d.id.split('-')[1];
-        // for(key in d){
-          // console.log(d)
-        //   tooltipInfo.push(d[key])
-        // }
-        // console.log(d)
         d3.select(this)
           .style('opacity', 0.5)
         tooltip.transition()
           .style('opacity', .9)
-        tooltip.html(stateAbbrev)
+        tooltip.html(stateHeat[stateAbbrev])
           .style('left', (d3.event.pageX -15) + 'px')
           .style('top', (d3.event.pageY - 30) + 'px')
       })
@@ -84,7 +79,15 @@ d3.json("us.json", function(error, us) {
       })
       //////////////////////////////END MAP
 
+      ///Populating stateHeat for use in heatmap below
       var stateHeat={};
+      var paths = d3.selectAll('path')[0];
+      paths.forEach(function(path){
+        //Getting state abbreviation out of DOM
+        var classString = path.className.animVal;
+        var state = classString.slice(classString.length-2)
+        stateHeat[state]=0;
+      })
       /////////////////////////
       /////Bringing in other json
       d3.json("data.json",function(error,datum){
@@ -104,13 +107,13 @@ d3.json("us.json", function(error, us) {
               stateHeat[state]+=1}
 
           })
-          console.log(stateHeat)
+          // console.log(stateHeat)
 
 
           svg.selectAll(".subunit")
             .style('fill',function(d){
               var abbrev = d.id.split('-').pop();
-              console.log('StateHeat ',stateHeat)
+              // console.log('StateHeat ',stateHeat)
               return color(stateHeat[abbrev])
             })   
      

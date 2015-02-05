@@ -1,20 +1,23 @@
 var width = 960,
-    height = 500,
-    radius = Math.min(width, height) / 2;
+    height = 700,
+    radius = Math.min(width, height) / 2.4;
 
 var color = d3.scale.category20();
 
 var pie = d3.layout.pie()
-    .value(function(d) { return d.apples; })
-    .sort(null);
+    .value(function(d) { return d.yes; })
+    // .sort(null);
 
 var arc = d3.svg.arc()
     .innerRadius(radius - 100)
-    .outerRadius(radius - 20);
+    .outerRadius(radius - 20)
+    // .cornerRadius(1)
 
 var transitionArc = d3.svg.arc()
-      .innerRadius(radius - 80)
-      .outerRadius(radius - 5);
+      .innerRadius(radius + 10)
+      .outerRadius(radius + 50)
+      // .cornerRadius(50)
+
 
 var svg = d3.select("body").append("svg")
     .attr("width", width)
@@ -22,24 +25,13 @@ var svg = d3.select("body").append("svg")
   .append("g")
     .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-// d3.tsv("data.tsv", type, function(error, data) {
-
-// var data=[
-// {apples:1800, oranges:700},
-// {apples:2000, oranges:500},
-// {apples:1200, oranges:60},
-// {apples:200, oranges:700},
-// {apples:900, oranges:500},
-// {apples:400, oranges:700}
-// ];
-
 var data=[
-{apples:1800, oranges:700},
-{apples:2000, oranges:500},
-{apples:1200, oranges:60},
-{apples:200, oranges:700},
-{apples:900, oranges:500},
-{apples:400, oranges:700}
+{yes:1800, no:700},
+{yes:2000, no:500},
+{yes:1200, no:60},
+{yes:200, no:700},
+{yes:900, no:500},
+{yes:400, no:700}
 ];
 
   var path = svg.datum(data).selectAll("path")
@@ -56,22 +48,20 @@ var data=[
   //   d3.select("input[value=\"oranges\"]").property("checked", true).each(change);
   // }, 2000);
 
-
-
-
-
   function change() {
     var value = this.value;
+    // console.log('THIS ',this)
     // clearTimeout(timeout);
     pie.value(function(d) { return d[value]; }); // change the value function
     path = path.data(pie); // compute the new angles
-    path.transition().duration(750).attrTween("d", arcTween); // redraw the arcs
+    path.transition().duration(500).ease("elastic")
+      .attrTween("d", arcTween); // redraw the arcs
   }
 
 
 function type(d) {
-  d.apples = +d.apples;
-  d.oranges = +d.oranges;
+  d.yes = +d.yes;
+  d.no = +d.no;
   return d;
 }
 
@@ -92,10 +82,10 @@ var paths = d3.selectAll('path');
 paths.on('click', function() {
     var thisPath = d3.select(this);
     if(thisPath.attr('transitioned')==='true'){
-      thisPath.transition().attr('d', arc)
+      thisPath.transition().duration(2000).ease('elastic').attr('d', arc)
       thisPath.attr('transitioned', false)
     } else {
-      thisPath.transition().attr('d', transitionArc)
+      thisPath.transition().ease("bounce").duration(1000).attr('d', transitionArc)
       thisPath.attr('transitioned', true)
     }
 })

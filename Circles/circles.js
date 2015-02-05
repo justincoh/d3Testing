@@ -83,6 +83,7 @@
               .style('opacity', 0.5)
             tooltip.transition()
               .style('opacity', .9)
+              console.log(d)
             tooltip.html('R= '+d[2].toString().substring(0,4)+'%')
               // console.log(d)
               .style('left', (d3.event.pageX -15) + 'px')
@@ -95,8 +96,18 @@
                   .style('opacity', 0)
             })
 
+        
+
+
+            
 
         });
+
+
+
+
+
+
 
         // ///To track mouse movements
         // svg.on('mousemove',function() {
